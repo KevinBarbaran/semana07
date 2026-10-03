@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 py-12 selection:bg-indigo-500 selection:text-white">
+
+    <div class="w-full max-w-xl animate__animated animate__fadeInUp">
+        <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl p-8 relative">
+            
+            <div class="text-center space-y-1 mb-8">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 mb-2">
+                    <i class="fa-solid fa-user-plus text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-100">Crear Nueva Cuenta</h2>
+                <p class="text-xs text-slate-400">Completa tus datos para formar parte del sistema</p>
+            </div>
+
+            <form id="signUpForm" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Nombre</label>
+                        <input id="name" type="text" required placeholder="Juan"
+                            class="w-full px-3.5 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Apellido</label>
+                        <input id="lastName" type="text" required placeholder="Pérez"
+                            class="w-full px-3.5 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Teléfono</label>
+                        <input id="phoneNumber" type="tel" required placeholder="987654321"
+                            class="w-full px-3.5 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Fecha Nacimiento</label>
+                        <input id="birthdate" type="date" required
+                            class="w-full px-3.5 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Correo Electrónico</label>
+                    <input id="email" type="email" required placeholder="juan.perez@dominio.com"
+                        class="w-full px-3.5 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Contraseña</label>
+                    <input id="password" type="password" required placeholder="••••••••"
+                        class="w-full px-3.5 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 text-sm">
+                    <p class="text-[11px] text-slate-500 mt-1">
+                        Requisito: Mín. 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial (# $ % & * @).
+                    </p>
+                </div>
+
+                <div id="alertBox" class="hidden p-3 rounded-xl text-xs font-medium border animate__animated animate__fadeIn"></div>
+
+                <button type="submit"
+                    class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/25 transition-all duration-200 mt-2">
+                    Completar Registro
+                </button>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-slate-800 text-center">
+                <p class="text-xs text-slate-400">
+                    ¿Ya tienes cuenta creada? 
+                    <a href="/signIn" class="text-indigo-400 hover:text-indigo-300 font-semibold transition hover:underline">Inicia Sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signUpForm');
+        const alertBox = document.getElementById('alertBox');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showAlert('');
+
+            const body = {
+                name: document.getElementById('name').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                phoneNumber: document.getElementById('phoneNumber').value.trim(),
+                birthdate: document.getElementById('birthdate').value,
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                roles: ['user']
+            };
+
+            try {
+                const res = await fetch('/api/auth/signUp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showAlert(data.message || 'Ocurrió un error en el registro', true);
+                    return;
+                }
+
+                showAlert('Registro guardado correctamente. Redirigiendo...', false);
+                setTimeout(() => window.location.href = '/signIn', 1500);
+
+            } catch (err) {
+                showAlert('Error en la comunicación con el servidor', true);
+            }
+        });
+
+        function showAlert(msg, isError = false) {
+            if (!msg) {
+                alertBox.classList.add('hidden');
+                return;
+            }
+            alertBox.classList.remove('hidden', 'bg-rose-950/50', 'border-rose-800', 'text-rose-300', 'bg-emerald-950/50', 'border-emerald-800', 'text-emerald-300');
+            
+            if (isError) {
+                alertBox.classList.add('bg-rose-950/50', 'border-rose-800', 'text-rose-300');
+            } else {
+                alertBox.classList.add('bg-emerald-950/50', 'border-emerald-800', 'text-emerald-300');
+            }
+            alertBox.textContent = msg;
+        }
+    </script>
+</body>
+</html>

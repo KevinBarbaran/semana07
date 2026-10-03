@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Usuario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-md shadow-indigo-600/30">
+                    U
+                </div>
+                <span class="font-semibold text-slate-200 tracking-wide text-sm sm:text-base">Panel de Usuario</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="/profile" class="px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700/80 rounded-xl border border-slate-700/50 transition flex items-center gap-2">
+                    <i class="fa-solid fa-id-card"></i> <span>Mi Perfil</span>
+                </a>
+                <button onclick="logout()" class="px-3.5 py-2 text-xs sm:text-sm font-medium text-rose-400 bg-rose-950/40 hover:bg-rose-900/60 rounded-xl border border-rose-800/40 transition flex items-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline">Salir</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="max-w-4xl mx-auto px-4 py-10 flex-1 w-full space-y-6">
+        
+        <!-- Tarjeta de Bienvenida -->
+        <div class="bg-gradient-to-r from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/20 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
+            <div class="relative z-10 space-y-2">
+                <span class="px-3 py-1 rounded-full text-[11px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                    SISTEMA ACTIVO
+                </span>
+                <h1 id="welcomeHeading" class="text-2xl sm:text-3xl font-bold text-slate-100">Cargando información...</h1>
+                <p class="text-sm text-slate-400 max-w-xl">
+                    Has ingresado al panel de control personal. Puedes consultar tus datos registrados o modificarlos según sea necesario.
+                </p>
+            </div>
+        </div>
+
+        <!-- Detalles de Cuenta -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800 pb-3 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-indigo-400"></i> Resumen de Datos
+            </h3>
+
+            <div id="userDataGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const token = sessionStorage.getItem('token');
+        if (!token) window.location.href = '/signIn';
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/users/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    sessionStorage.removeItem('token');
+                    window.location.href = '/signIn';
+                    return;
+                }
+
+                const user = await res.json();
+                document.getElementById('welcomeHeading').textContent = `¡Hola, ${user.name} ${user.lastName}!`;
+
+                const grid = document.getElementById('userDataGrid');
+                grid.innerHTML = `
+                    <div class="p-3.5 bg-slate-950/50 rounded-xl border border-slate-800/80">
+                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 block mb-1">Correo</span>
+                        <span class="text-sm font-medium text-slate-200">${user.email}</span>
+                    </div>
+                    <div class="p-3.5 bg-slate-950/50 rounded-xl border border-slate-800/80">
+                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 block mb-1">Teléfono</span>
+                        <span class="text-sm font-medium text-slate-200">${user.phoneNumber || 'No especificado'}</span>
+                    </div>
+                    <div class="p-3.5 bg-slate-950/50 rounded-xl border border-slate-800/80">
+                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 block mb-1">Edad Calculada</span>
+                        <span class="text-sm font-medium text-indigo-400">${user.age ? user.age + ' años' : 'N/A'}</span>
+                    </div>
+                    <div class="p-3.5 bg-slate-950/50 rounded-xl border border-slate-800/80">
+                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 block mb-1">Dirección</span>
+                        <span class="text-sm font-medium text-slate-200">${user.address || 'Sin registrar'}</span>
+                    </div>
+                `;
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('token');
+            window.location.href = '/signIn';
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - Acceso Restringido</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 selection:bg-indigo-500 selection:text-white">
+
+    <div class="max-w-md w-full text-center space-y-6 animate__animated animate__fadeInUp">
+        <div class="relative inline-block">
+            <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-rose-600 to-indigo-600 blur-lg opacity-40 animate-pulse"></div>
+            <div class="relative bg-slate-900 border border-slate-800 rounded-full w-28 h-28 flex items-center justify-center mx-auto text-rose-500 shadow-2xl">
+                <i class="fa-solid fa-user-lock text-5xl"></i>
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            <h1 class="text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-indigo-400 to-slate-200">403</h1>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-200">Acceso Prohibido</h2>
+            <p class="text-slate-400 text-sm max-w-sm mx-auto">
+                No posees los privilegios suficientes para acceder a este recurso. Si consideras que es un error, contacta al administrador.
+            </p>
+        </div>
+
+        <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+            <button onclick="history.back()" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-medium transition-all duration-300 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-arrow-left text-xs"></i> Regresar
+            </button>
+            <a href="/signIn" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg shadow-indigo-600/30 transition-all duration-300 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-right-to-bracket text-xs"></i> Iniciar Sesión
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
